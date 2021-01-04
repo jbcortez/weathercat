@@ -17,8 +17,8 @@
                 WeatherCat
             </div>
             <form action="#" class="search">
-                <input type="text" class="search__input" placeholder="Enter city or zip code">
-                <button class="search__button">
+                <input type="text" id="locationInput" class="search__input" placeholder="Enter city or zip code">
+                <button id="searchButton" class="search__button">
                     <svg class="search__icon">
                         <use xlink:href="img/sprite.svg#icon-magnifying-glass"></use>
                     </svg>
@@ -29,11 +29,14 @@
         <main class="main">
             <div class="weather">
                 <div class="weather-box">
-                    <h4 class="weather__location">San Francisco, CA</h4>
-                    <span class="weather__time">8:30 PM</span>
+                    <h4 id="currentLocation" class="weather__location">San Francisco, CA</h4>
+                    <div class="weather__time" id="currentTime"></div>
                     <div class="weather__temperature-box">
-                        <span class="weather__temperature">49&deg;</span>
-                        <img src="/img//weather-icons-master/svg/wi-day-sunny.svg" alt="Sunny day icon" class="weather__icon">
+                        <span id="currentTemp" class="weather__temperature"></span>
+                        <img src="" id="weatherIcon" alt="weather icon" class="weather__icon">
+                    </div>
+                    <div class="weather__description">
+                        <span id="weatherDescription"></span>
                     </div>
                 </div>
 
