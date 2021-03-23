@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/jbcortez/weatherapp#readme",
   "dependencies": {
+    "dayjs": "^1.10.3",
     "node-sass": "^5.0.0"
   },
   "devDependencies": {

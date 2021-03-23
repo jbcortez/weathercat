@@ -1,123 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="sass/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/img/weather-icons-master/css/weather-icons.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="sass/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="/img/weather-icons-master/css/weather-icons.min.css"
+    />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header class="header">
-            <div class="logo">
-                WeatherCat
+      <header class="header">
+        <div class="logo">WeatherCat</div>
+        <form action="#" class="search">
+          <input
+            type="text"
+            id="locationInput"
+            class="search__input"
+            placeholder="Enter city or zip code"
+          />
+          <button id="searchButton" class="search__button">
+            <svg class="search__icon">
+              <use xlink:href="img/sprite.svg#icon-magnifying-glass"></use>
+            </svg>
+          </button>
+        </form>
+      </header>
+
+      <main class="main">
+        <div class="weather">
+          <div class="weather-box">
+            <h4 id="currentLocation" class="weather__location">
+              San Francisco, CA
+            </h4>
+            <div class="weather__time" id="currentTime"></div>
+            <div class="weather__temperature-box">
+              <span id="currentTemp" class="weather__temperature"></span>
             </div>
-            <form action="#" class="search">
-                <input type="text" id="locationInput" class="search__input" placeholder="Enter city or zip code">
-                <button id="searchButton" class="search__button">
-                    <svg class="search__icon">
-                        <use xlink:href="img/sprite.svg#icon-magnifying-glass"></use>
-                    </svg>
-                </button>
-            </form>
-        </header>
+            <div class="weather__description">
+              <span id="weatherDescription"></span>
+            </div>
+          </div>
 
-        <main class="main">
-            <div class="weather">
-                <div class="weather-box">
-                    <h4 id="currentLocation" class="weather__location">San Francisco, CA</h4>
-                    <div class="weather__time" id="currentTime"></div>
-                    <div class="weather__temperature-box">
-                        <span id="currentTemp" class="weather__temperature"></span>
-                        <img src="" id="weatherIcon" alt="weather icon" class="weather__icon">
-                    </div>
-                    <div class="weather__description">
-                        <span id="weatherDescription"></span>
-                    </div>
-                </div>
+          <div class="weather__icon-box">
+            <img src="" id="weatherIcon" alt="weather icon" />
+          </div>
 
-                <div class="weather__info-box">
-                    <div class="weather__info-box--air-quality-box">
-                        <span class="label">Air Quality</span>
-                        <span class="value">Good</span>
-                    </div>
-
-                    <div class="weather__info-box--precipitation-box">
-                        <span class="label">Precipitation</span>
-                        <span class="value">15%</span>
-                    </div>
-
-                    <div class="weather__info-box--wind-box">
-                        <span class="label">Wind</span>
-                        <span class="value">S 15 MPH</span>
-                    </div>
-                </div>
-
+          <div class="weather__info-box">
+            <div class="weather__info-box--air-quality-box">
+              <span class="label">Air Quality</span>
+              <span class="value" id="currentAirQuality"></span>
             </div>
 
-            <div class="aqi-box">
-                <div class="aqi">
-                    <span class="aqi__label">Air Quality Index</span>
-                    <span class="aqi__value">29</span>
-                </div>
+            <div class="weather__info-box--precipitation-box">
+              <span class="label">Precipitation</span>
+              <span class="value" id="mainPrecipitationProbability"></span>
             </div>
 
-            <div class="weather-details-box">
-                <div class="weather-details">
-                    <div class="weather-details__column">
-                        <div class="weather-details__feels-like">
-                            <span class="label">Feels like</span>
-                            <span class="value">50&deg;</span>
-                        </div>
-    
-                        <div class="weather-details__high-temp">
-                            <span class="label">High</span>
-                            <span class="value">63&deg;</span>
-                        </div>
-    
-                        <div class="weather-details__low-temp">
-                            <span class="label">Low</span>
-                            <span class="value">42&deg;</span>
-                        </div>
-    
-                        <div class="weather-details__humidity">
-                            <span class="label">Humidity</span>
-                            <span class="value">80%</span>
-                        </div>
-                    </div>
+            <div class="weather__info-box--wind-box">
+              <span class="label">Wind</span>
+              <p>
+                <span class="value" id="currentWindDirection"> </span
+                ><span class="value" id="currentWindSpeed"></span>
+              </p>
+            </div>
+          </div>
+        </div>
 
-                    <div class="weather-details__column">
-                        <div class="weather-details__pop">
-                            <span class="label">Probability of Precipitation</span>
-                            <span class="value">5%</span>
-                        </div>
-    
-                        <div class="weather-details__pressure">
-                            <span class="label">Pressure</span>
-                            <span class="value">&darr; 30.16 in</span>
-                        </div>
-    
-                        <div class="weather-details__wind">
-                            <span class="label">Wind</span>
-                            <span class="value">N 4 MPH</span>
-                        </div>
-    
-                        <div class="weather-details__uv-index">
-                            <span class="label">UV Index</span>
-                            <span class="value">0 of 10</span>
-                        </div>
-                    </div>
-                </div>
+        <div class="weather-details-box">
+          <div class="weather-details">
+            <div class="weather-details__column">
+              <div class="weather-details__feels-like">
+                <span class="label">Feels like</span>
+                <span class="value" id="feelsLike"></span>
+              </div>
+
+              <div class="weather-details__high-temp">
+                <span class="label">Sunrise</span>
+                <span class="value" id="sunrise"></span>
+              </div>
+
+              <div class="weather-details__low-temp">
+                <span class="label">Sunset</span>
+                <span class="value" id="sunset"></span>
+              </div>
+
+              <div class="weather-details__humidity">
+                <span class="label">Humidity</span>
+                <span class="value" id="humidity"></span>
+              </div>
             </div>
 
-            <div class="weather-map-box">WHAT GOES HERE?</div>
-        </main>
+            <div class="weather-details__column">
+              <div class="weather-details__pop">
+                <span class="label">Probability of Precipitation</span>
+                <span class="value" id="precipitationProbability"></span>
+              </div>
+
+              <div class="weather-details__pressure">
+                <span class="label">Pressure</span>
+                <span class="value" id="pressure"></span>
+              </div>
+
+              <div class="weather-details__wind">
+                <span class="label">Wind</span>
+                <p>
+                  <span class="value" id="currentWindDirectionDetail"></span
+                  ><span class="value" id="currentWindSpeedDetail"></span>
+                </p>
+              </div>
+
+              <div class="weather-details__uv-index">
+                <span class="label">UV Index</span>
+                <span class="value" id="UVIndex"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cat-photo-box" id="randomCatPhoto"></div>
+      </main>
     </div>
-    <script src="app.js"></script>
-</body>
 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"
+      integrity="sha512-LGXaggshOkD/at6PFNcp2V2unf9LzFq6LE+sChH7ceMTDP0g2kn6Vxwgg7wkPP7AAtX+lmPqPdxB47A0Nz0cMQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="moment-timezone.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
