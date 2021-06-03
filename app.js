@@ -1,287 +1,286 @@
-// USER INPUT VARIABLES
-var userLocation = "san francisco,us"
-var measurement = "imperial"
+require('dotenv').config();
 
-// MAIN WEATHER CARD VARIABLES
-var currentTemp = document.getElementById("currentTemp")
-var currentLocation = document.getElementById("currentLocation")
-var currentWeatherDescription = document.getElementById("weatherDescription")
-var weatherIcon = document.getElementById("weatherIcon")
-var weatherIconId = ""
-var currentAirQuality = document.getElementById("currentAirQuality")
-var currentWindDirection = document.getElementById("currentWindDirection")
-var currentWindSpeed = document.getElementById("currentWindSpeed")
-var mainPrecipitationProbability = document.getElementById(
-  "mainPrecipitationProbability"
-)
-var mainFeelsLike = document.getElementById("mainFeelsLike")
+(function () {
+  const apiKey = API_KEY;
+  const unsplashApi = UNSPLASH_API_KEY;
 
-// WEATHER DETAILS VARIABLES
-var feelsLike = document.getElementById("feelsLike")
-var sunrise = document.getElementById("sunrise")
-var sunset = document.getElementById("sunset")
-var humidity = document.getElementById("humidity")
-var pressure = document.getElementById("pressure")
-var currentWindDirectionDetail = document.getElementById(
-  "currentWindDirectionDetail"
-)
-var currentWindSpeedDetail = document.getElementById("currentWindSpeedDetail")
-var UVIndex = document.getElementById("UVIndex")
-var precipitationProbability = document.getElementById(
-  "precipitationProbability"
-)
+  // USER INPUT VARIABLES
+  let userLocation = 'san francisco,us';
+  const measurement = 'imperial';
 
-// RANDOM CAT PHOTO
-var randomCatPhoto = document.getElementById("randomCatPhoto")
+  // MAIN WEATHER CARD VARIABLES
+  let currentTemp = document.getElementById('currentTemp');
+  let currentLocation = document.getElementById('currentLocation');
+  let currentWeatherDescription = document.getElementById('weatherDescription');
+  let weatherIcon = document.getElementById('weatherIcon');
+  let weatherIconId = '';
+  let currentAirQuality = document.getElementById('currentAirQuality');
+  let currentWindDirection = document.getElementById('currentWindDirection');
+  let currentWindSpeed = document.getElementById('currentWindSpeed');
+  let mainPrecipitationProbability = document.getElementById(
+    'mainPrecipitationProbability'
+  );
+  let mainFeelsLike = document.getElementById('mainFeelsLike');
 
-// GET LOCATION FROM SEARCH BAR
+  // WEATHER DETAILS VARIABLES
+  let feelsLike = document.getElementById('feelsLike');
+  let sunrise = document.getElementById('sunrise');
+  let sunset = document.getElementById('sunset');
+  let humidity = document.getElementById('humidity');
+  let pressure = document.getElementById('pressure');
+  let currentWindDirectionDetail = document.getElementById(
+    'currentWindDirectionDetail'
+  );
+  let currentWindSpeedDetail = document.getElementById(
+    'currentWindSpeedDetail'
+  );
+  let UVIndex = document.getElementById('UVIndex');
+  let precipitationProbability = document.getElementById(
+    'precipitationProbability'
+  );
 
-var locationInput = document.getElementById("locationInput")
-var searchButton = document.getElementById("searchButton")
+  // RANDOM CAT PHOTO
+  let randomCatPhoto = document.getElementById('randomCatPhoto');
 
-searchButton.addEventListener("click", function () {
-  userLocation = locationInput.value
-  getWeather(userLocation, measurement)
-  getAQI(userLocation)
-  getLocalizedTime()
-  getUVIndex()
-  getPrecipitationProbability()
-})
+  // GET LOCATION FROM SEARCH BAR
 
-// GET GEOCODE OF userLocation TO BE USED FOR AQI
-async function getGeocode(userLocation) {
-  let geocode = []
+  let locationInput = document.getElementById('locationInput');
+  let searchButton = document.getElementById('searchButton');
 
-  let response = await fetch(
-    `http://api.openweathermap.org/geo/1.0/direct?q=${userLocation}&limit=1&appid=886705b4c1182eb1c69f28eb8c520e20`
-  )
-  let json = await response.json()
+  searchButton.addEventListener('click', function () {
+    if (locationInput.value.match(/([A-Z])\w+|,/gi)) {
+      userLocation = locationInput.value;
+      getWeather(userLocation, measurement);
+      getAQI(userLocation);
+      getLocalizedTime();
+      getUVIndex();
+      getPrecipitationProbability();
+    }
+  });
 
-  geocode[0] = json[0].lat
-  geocode[1] = json[0].lon
+  // GET GEOCODE OF userLocation TO BE USED FOR AQI
+  const getGeocode = async (userLocation) => {
+    let geocode = [];
 
-  return geocode
-}
+    const response = await fetch(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${userLocation}&limit=1&appid=${apiKey}`
+    );
+    const data = await response.json();
 
-// openweather API key
-// 886705b4c1182eb1c69f28eb8c520e20
+    geocode[0] = data[0].lat;
+    geocode[1] = data[0].lon;
+    return geocode;
+  };
 
-// GET WEATHER INFORMATION AND DISPLAY IT
+  // GET WEATHER INFORMATION AND DISPLAY IT
 
-async function getWeather(userLocation, measurement) {
-  const apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${userLocation}&units=${measurement}&appid=886705b4c1182eb1c69f28eb8c520e20`
-  const response = await fetch(apiUrl)
-  const json = await response.json()
+  const getWeather = async (userLocation, measurement) => {
+    const apiUrl = `http://api.openweathermap.org/data/2.5/weather?q=${userLocation}&units=${measurement}&appid=${apiKey}`;
+    const response = await fetch(apiUrl);
+    const json = await response.json();
+    currentLocation.textContent = `${json.name}, ${json.sys.country}`;
+    currentTemp.textContent = Math.round(json.main.temp) + '\u00B0';
+    currentWeatherDescription.textContent = json.weather[0].description;
+    weatherIconId = json.weather[0].icon;
+    weatherIcon.src = `http://openweathermap.org/img/wn/${weatherIconId}.png`;
 
-  currentLocation.textContent = json.name
-  currentTemp.textContent = Math.round(json.main.temp) + "\u00B0"
-  currentWeatherDescription.textContent = json.weather[0].description
-  weatherIconId = json.weather[0].icon
-  weatherIcon.src = `http://openweathermap.org/img/wn/${weatherIconId}.png`
+    let windDirection = json.wind.deg;
+    let windSpeed = json.wind.speed;
+    getWindInformation(windDirection, windSpeed);
 
-  let windDirection = json.wind.deg
-  let windSpeed = json.wind.speed
-  getWindInformation(windDirection, windSpeed)
+    // POPULATE WEATHER DETAILS CARD
+    feelsLike.textContent = Math.round(json.main.feels_like) + '\u00B0';
 
-  // POPULATE WEATHER DETAILS CARD
-  feelsLike.textContent = Math.round(json.main.feels_like) + "\u00B0"
+    // CONVERT SUNRISE AND SUNSET UNIX TIMESTAMP
+    let sunriseDate = convertTimestamp(json.sys.sunrise);
+    let sunsetDate = convertTimestamp(json.sys.sunset);
 
-  // CONVERT SUNRISE AND SUNSET UNIX TIMESTAMP
-  let sunriseDate = convertTimestamp(json.sys.sunrise)
-  let sunsetDate = convertTimestamp(json.sys.sunset)
+    let sunriseString = formatTime(sunriseDate);
+    let sunsetString = formatTime(sunsetDate);
 
-  let sunriseString = formatTime(sunriseDate)
-  let sunsetString = formatTime(sunsetDate)
+    sunrise.textContent = sunriseString;
+    sunset.textContent = sunsetString;
 
-  sunrise.textContent = sunriseString
-  sunset.textContent = sunsetString
+    humidity.textContent = Math.round(json.main.humidity) + '%';
+    // CALCULATE PRESSURE TO INCHES OF MERCURY
+    let currentPressure = Math.round(json.main.pressure * 0.02953 * 100) / 100;
+    pressure.textContent = currentPressure + ' in';
+  };
 
-  humidity.textContent = Math.round(json.main.humidity) + "%"
-  // CALCULATE PRESSURE TO INCHES OF MERCURY
-  let currentPressure = Math.round(json.main.pressure * 0.02953 * 100) / 100
-  pressure.textContent = currentPressure + " in"
-}
+  // GET AQI
+  const getAQI = async (userLocation) => {
+    let geocode = await getGeocode(userLocation);
 
-// GET AQI
-async function getAQI(userLocation) {
-  let geocode = await getGeocode(userLocation)
+    let lat = geocode[0];
+    let lon = geocode[1];
 
-  let lat = geocode[0]
-  let lon = geocode[1]
+    // GET AQI JSON
+    let apiUrl = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+    let response = await fetch(apiUrl);
+    let json = await response.json();
+    let aqi = json.list[0].main.aqi;
 
-  // GET AQI JSON
-  let apiUrl = `http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat=${lat}&lon=${lon}&appid=886705b4c1182eb1c69f28eb8c520e20`
-  let response = await fetch(apiUrl)
-  let json = await response.json()
-  let aqi = json.list[0].main.aqi
+    switch (aqi) {
+      case 1:
+        currentAirQuality.textContent = 'Good';
+        currentAirQuality.style.color = '#00d41c';
+        break;
+      case 2:
+        currentAirQuality.textContent = 'Fair';
+        currentAirQuality.style.color = 'yellow';
+        break;
+      case 3:
+        currentAirQuality.textContent = 'Moderate';
+        currentAirQuality.style.color = '#ff7000';
+        break;
+      case 4:
+        currentAirQuality.textContent = 'Poor';
+        currentAirQuality.style.color = 'pink';
+        break;
+      case 5:
+        currentAirQuality.textContent = 'Very Poor';
+        currentAirQuality.style.color = '#ff0000';
+        break;
+    }
+  };
 
-  console.log("AQI is: " + aqi)
+  // GET WIND CONDITIONS
 
-  switch (aqi) {
-    case 1:
-      currentAirQuality.textContent = "Good"
-      currentAirQuality.style.color = "#00d41c"
-      break
-    case 2:
-      currentAirQuality.textContent = "Fair"
-      currentAirQuality.style.color = "yellow"
-      break
-    case 3:
-      currentAirQuality.textContent = "Moderate"
-      currentAirQuality.style.color = "#ff7000"
-      break
-    case 4:
-      currentAirQuality.textContent = "Poor"
-      currentAirQuality.style.color = "pink"
-      break
-    case 5:
-      currentAirQuality.textContent = "Very Poor"
-      currentAirQuality.style.color = "#ff0000"
-      break
-  }
-}
+  const getWindInformation = (windDirection, windSpeed) => {
+    // CONVERT WIND HEADING TO DIRECTION
+    if (windDirection > 348.75 || windDirection < 11.25) {
+      windDirection = 'N';
+    } else if (windDirection > 11.25 || windDirection < 33.75) {
+      windDirection = 'NNE';
+    } else if (windDirection > 33.75 || windDirection < 56.25) {
+      windDirection = 'NE';
+    } else if (windDirection > 56.25 || windDirection < 78.75) {
+      windDirection = 'ENE';
+    } else if (windDirection > 78.75 || windDirection < 101.25) {
+      windDirection = 'E';
+    } else if (windDirection > 101.25 || windDirection < 123.75) {
+      windDirection = 'ESE';
+    } else if (windDirection > 123.75 || windDirection < 146.25) {
+      windDirection = 'SE';
+    } else if (windDirection > 146.25 || windDirection < 168.75) {
+      windDirection = 'SSE';
+    } else if (windDirection > 168.75 || windDirection < 191.25) {
+      windDirection = 'S';
+    } else if (windDirection > 191.25 || windDirection < 213.75) {
+      windDirection = 'SSW';
+    } else if (windDirection > 213.75 || windDirection < 236.25) {
+      windDirection = 'SW';
+    } else if (windDirection > 236.25 || windDirection < 258.75) {
+      windDirection = 'WSW';
+    } else if (windDirection > 258.75 || windDirection < 281.25) {
+      windDirection = 'W';
+    } else if (windDirection > 281.25 || windDirection < 303.75) {
+      windDirection = 'WNW';
+    } else if (windDirection > 303.76 || windDirection < 326.25) {
+      windDirection = 'NW';
+    } else {
+      windDirection = 'NNW';
+    }
 
-// GET WIND CONDITIONS
+    currentWindDirection.textContent = windDirection + ' ';
+    currentWindSpeed.textContent = Math.round(windSpeed) + ' MPH';
+    // WEATHER DETAILS CARD WIND INFORMATION
+    currentWindDirectionDetail.textContent = windDirection + ' ';
+    currentWindSpeedDetail.textContent = Math.round(windSpeed) + ' MPH';
+  };
 
-function getWindInformation(windDirection, windSpeed) {
-  // CONVERT WIND HEADING TO DIRECTION
-  if (windDirection > 348.75 || windDirection < 11.25) {
-    windDirection = "N"
-  } else if (windDirection > 11.25 || windDirection < 33.75) {
-    windDirection = "NNE"
-  } else if (windDirection > 33.75 || windDirection < 56.25) {
-    windDirection = "NE"
-  } else if (windDirection > 56.25 || windDirection < 78.75) {
-    windDirection = "ENE"
-  } else if (windDirection > 78.75 || windDirection < 101.25) {
-    windDirection = "E"
-  } else if (windDirection > 101.25 || windDirection < 123.75) {
-    windDirection = "ESE"
-  } else if (windDirection > 123.75 || windDirection < 146.25) {
-    windDirection = "SE"
-  } else if (windDirection > 146.25 || windDirection < 168.75) {
-    windDirection = "SSE"
-  } else if (windDirection > 168.75 || windDirection < 191.25) {
-    windDirection = "S"
-  } else if (windDirection > 191.25 || windDirection < 213.75) {
-    windDirection = "SSW"
-  } else if (windDirection > 213.75 || windDirection < 236.25) {
-    windDirection = "SW"
-  } else if (windDirection > 236.25 || windDirection < 258.75) {
-    windDirection = "WSW"
-  } else if (windDirection > 258.75 || windDirection < 281.25) {
-    windDirection = "W"
-  } else if (windDirection > 281.25 || windDirection < 303.75) {
-    windDirection = "WNW"
-  } else if (windDirection > 303.76 || windDirection < 326.25) {
-    windDirection = "NW"
-  } else {
-    windDirection = "NNW"
-  }
+  // GET PRECIPITATION PROBABILITY
+  const getPrecipitationProbability = async () => {
+    const geocode = await getGeocode(userLocation);
+    const lat = geocode[0];
+    const lon = geocode[1];
 
-  currentWindDirection.textContent = windDirection + " "
-  currentWindSpeed.textContent = Math.round(windSpeed) + " MPH"
-  // WEATHER DETAILS CARD WIND INFORMATION
-  currentWindDirectionDetail.textContent = windDirection + " "
-  currentWindSpeedDetail.textContent = Math.round(windSpeed) + " MPH"
-}
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`
+    );
+    const json = await response.json();
 
-// GET PRECIPITATION PROBABILITY
-async function getPrecipitationProbability() {
-  const geocode = await getGeocode(userLocation)
-  const lat = geocode[0]
-  const lon = geocode[1]
+    precipitationProbability.textContent = json.hourly[0].pop + '%';
+    mainPrecipitationProbability.textContent = json.hourly[0].pop + '%';
+  };
 
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=886705b4c1182eb1c69f28eb8c520e20`
-  )
-  const json = await response.json()
-  console.log(json.daily[0].pop)
-  precipitationProbability.textContent = json.hourly[0].pop + "%"
-  mainPrecipitationProbability.textContent = json.hourly[0].pop + "%"
-}
+  // GET UV INDEX
+  const getUVIndex = async () => {
+    const geocode = await getGeocode(userLocation);
+    const lat = geocode[0];
+    const lon = geocode[1];
 
-// GET UV INDEX
-async function getUVIndex() {
-  const geocode = await getGeocode(userLocation)
-  const lat = geocode[0]
-  const lon = geocode[1]
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`
+    );
+    const json = await response.json();
+    UVIndex.textContent = json.current.uvi + ' of 10';
+  };
 
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=886705b4c1182eb1c69f28eb8c520e20`
-  )
-  const json = await response.json()
-  UVIndex.textContent = json.current.uvi + " of 10"
-}
+  // GET RANDOM CAT PHOTO
+  const getCatPhoto = async () => {
+    const response = await fetch(
+      `https://api.unsplash.com/photos/random?client_id=${unsplashApi}&query=cats&count=1`
+    );
+    const data = await response.json();
 
-// GET RANDOM CAT PHOTO
-function getCatPhoto() {
-  fetch(
-    "https://api.unsplash.com/photos/random?client_id=SaRKYFXA7mqoMKDo7ep6gLgkKUOUSCBni98sOy5kT9I&query=cats&count=1"
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      randomCatPhoto.style.backgroundImage = "url(" + data[0].urls.thumb + ")"
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
+    randomCatPhoto.style.backgroundImage = `url(${data[0].urls.thumb})`;
+  };
 
-// CONVERT UNIX TIMESTAMP TO DATE
+  // CONVERT UNIX TIMESTAMP TO DATE
 
-function convertTimestamp(timestamp) {
-  const date = new Date(timestamp * 1000)
-  return date
-}
+  const convertTimestamp = (timestamp) => {
+    const date = new Date(timestamp * 1000);
+    return date;
+  };
 
-// GET TIME IN UTC
-async function getLocalizedTime() {
-  const geocode = await getGeocode(userLocation)
-  const lat = geocode[0]
-  const lon = geocode[1]
+  // GET TIME IN UTC
+  const getLocalizedTime = async () => {
+    const geocode = await getGeocode(userLocation);
+    const lat = geocode[0];
+    const lon = geocode[1];
 
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=886705b4c1182eb1c69f28eb8c520e20`
-  )
-  const json = await response.json()
-  const timezone = json.timezone
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`
+    );
+    const json = await response.json();
+    const timezone = json.timezone;
 
-  // MOMENT.JS ==================
-  const time = moment.tz(timezone).format("h:mm A")
-  console.log(time)
+    // MOMENT.JS ==================
+    const time = moment.tz(timezone).format('h:mm A');
 
-  const timeElement = document.getElementById("currentTime")
-  timeElement.textContent = time
-}
+    const timeElement = document.getElementById('currentTime');
+    timeElement.textContent = time;
+  };
 
-//  FORMAT TIME
-function formatTime(date) {
-  var date = date
+  //  FORMAT TIME
+  const formatTime = (date) => {
+    var date = date;
 
-  let hour = date.getHours()
-  let min = date.getMinutes()
-  let amPm = ""
+    let hour = date.getHours();
+    let min = date.getMinutes();
+    let amPm = '';
 
-  if (hour < 12) {
-    amPm = "AM"
-  } else {
-    amPm = "PM"
-  }
+    if (hour < 12) {
+      amPm = 'AM';
+    } else {
+      amPm = 'PM';
+    }
 
-  hour = hour % 12 || 12
+    hour = hour % 12 || 12;
 
-  if (min < 10) {
-    min = "0" + min
-  }
+    if (min < 10) {
+      min = '0' + min;
+    }
 
-  var timeString = `${hour}:${min} ${amPm}`
-  return timeString
-}
+    var timeString = `${hour}:${min} ${amPm}`;
+    return timeString;
+  };
 
-getWeather(userLocation, measurement)
-getAQI(userLocation)
-getLocalizedTime()
-getCatPhoto()
-getUVIndex()
-getPrecipitationProbability()
+  getWeather(userLocation, measurement);
+  getAQI(userLocation);
+  getLocalizedTime();
+  getCatPhoto();
+  getUVIndex();
+  getPrecipitationProbability();
+})();

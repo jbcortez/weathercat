@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="sass/main.css" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
@@ -17,7 +18,7 @@
       rel="stylesheet"
       href="/img/weather-icons-master/css/weather-icons.min.css"
     />
-    <title>Document</title>
+    <title>WeatherCat</title>
   </head>
   <body>
     <div class="container">
@@ -28,7 +29,7 @@
             type="text"
             id="locationInput"
             class="search__input"
-            placeholder="Enter city or zip code"
+            placeholder="Enter city, country (e.g. San Francisco, us)"
           />
           <button id="searchButton" class="search__button">
             <svg class="search__icon">
@@ -47,14 +48,18 @@
             <div class="weather__time" id="currentTime"></div>
             <div class="weather__temperature-box">
               <span id="currentTemp" class="weather__temperature"></span>
+              <div class="weather__icon-box">
+                <img
+                  src=""
+                  id="weatherIcon"
+                  class="weather__icon-box--icon"
+                  alt="weather icon"
+                />
+              </div>
             </div>
             <div class="weather__description">
               <span id="weatherDescription"></span>
             </div>
-          </div>
-
-          <div class="weather__icon-box">
-            <img src="" id="weatherIcon" alt="weather icon" />
           </div>
 
           <div class="weather__info-box">
@@ -80,7 +85,7 @@
 
         <div class="weather-details-box">
           <div class="weather-details">
-            <div class="weather-details__column">
+            <div class="weather-details__column first">
               <div class="weather-details__feels-like">
                 <span class="label">Feels like</span>
                 <span class="value" id="feelsLike"></span>

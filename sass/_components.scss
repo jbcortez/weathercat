@@ -76,7 +76,7 @@
 .weather {
   display: flex;
   justify-content: space-between;
-  padding: 2.4rem;
+  padding: 2.4rem 3rem;
   background-image: linear-gradient(to right bottom, $dark-blue, $medium-blue);
   border-radius: 3px;
   box-shadow: $shadow-medium;
@@ -107,9 +107,8 @@
 
   &__icon-box {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     font-size: 1.8rem;
     color: white;
 
@@ -187,7 +186,6 @@
   }
 }
 
-// WEATHER MAP
 .cat-photo-box {
   display: flex;
   background-color: $color-grey-light-1;
@@ -195,7 +193,78 @@
   box-shadow: $shadow-medium;
   flex: 1 1;
   margin-top: 2.4rem;
+  background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center;
+  background-image: url('/public/images/cat.jpg');
+}
+
+@media screen and (max-width: 500px) {
+  .logo {
+    margin: 0;
+  }
+  .search {
+    margin: 0;
+    padding: 0 1.5rem;
+    width: 100%;
+  }
+
+  .weather {
+    margin: 0 auto;
+    width: 100%;
+    overflow: auto;
+    flex-direction: column;
+    padding: 1rem 2.5rem;
+
+    &__temperature-box {
+      justify-content: space-between;
+    }
+
+    &__icon-box {
+      width: min-content;
+      & img {
+        width: 13rem;
+        height: auto;
+      }
+    }
+  }
+
+  .weather-details-box {
+    width: 100%;
+    margin: 1.5rem;
+    padding: 1rem 2.5rem;
+  }
+
+  .weather-details {
+    flex-direction: column;
+
+    &__column {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      flex: 1;
+
+      &.first {
+        border-bottom: 1px solid $primary-light;
+      }
+
+      & > * {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        line-height: 2;
+        padding: 1rem 0;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid $primary-light;
+        }
+      }
+    }
+  }
+  .cat-photo-box {
+    width: 100%;
+    margin: 0 1.5rem;
+    border-radius: 3px;
+    min-height: 35rem;
+  }
 }

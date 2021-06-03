@@ -4,7 +4,6 @@
   background-color: $secondary;
   box-shadow: $shadow-dark;
   border-radius: 3px;
-  overflow: hidden;
 }
 
 .header {
@@ -21,4 +20,27 @@
   display: flex;
   flex-wrap: wrap;
   padding: 2.4rem;
+}
+
+@media screen and (max-width: 500px) {
+  .container {
+    margin: 0;
+  }
+
+  .main {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .header {
+    height: 12rem;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
