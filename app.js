@@ -1,8 +1,6 @@
-require('dotenv').config();
-
 (function () {
-  const apiKey = API_KEY;
-  const unsplashApi = UNSPLASH_API_KEY;
+  const apiKey = process.env.API_KEY;
+  const unsplashApi = process.env.UNSPLASH_API_KEY;
 
   // USER INPUT VARIABLES
   let userLocation = 'san francisco,us';
