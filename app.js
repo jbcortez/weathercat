@@ -1,6 +1,6 @@
 (function () {
-  const apiKey = process.env.API_KEY;
-  const unsplashApi = process.env.UNSPLASH_API_KEY;
+  const apiKey = '886705b4c1182eb1c69f28eb8c520e20';
+  const unsplashApi = 'SaRKYFXA7mqoMKDo7ep6gLgkKUOUSCBni98sOy5kT9I';
 
   // USER INPUT VARIABLES
   let userLocation = 'san francisco,us';
